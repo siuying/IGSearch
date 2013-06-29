@@ -42,6 +42,10 @@ Search the document is simple:
 [search search:@"Mega" withField:@"title"]; // @[ @{@"title": @"Mega Man", @"system": @"NES"}  ]
 ```
 
+## Credits
+
+Use SQLite porter stemmer from [Mozilla Thunderbird](https://bugzilla.mozilla.org/show_bug.cgi?id=472764), Mozilla Public License.
+
 ## License
 
-MIT License.
+This software is licensed in MIT License.
