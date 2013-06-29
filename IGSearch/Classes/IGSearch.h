@@ -17,12 +17,21 @@
 
 -(BOOL) close;
 
-// Index a document
--(void) indexDocument:(NSDictionary*)document withId:(NSString*)identifier;
+/* 
+ Index a doucment.
+ @param document The document. Must be a dictionary with key and values as String.
+ @param docId A string key repredent the document.
+ */
+-(BOOL) indexDocument:(NSDictionary*)document withId:(NSString*)docId;
 
-// count number of document was indexed
+/*
+ Count number of document was indexed.
+*/
 -(NSUInteger) count;
 
+/*
+ Search the database with specifc string.
+ */
 -(NSArray*) search:(NSString*)string;
 
 -(NSArray*) searchWithFields:(NSDictionary*)fields;

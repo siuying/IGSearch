@@ -38,21 +38,39 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     return [self.database close];
 }
 
--(void) indexDocument:(NSDictionary*)document withId:(NSString*)documentId {
-    BOOL succeed = [self.database executeUpdate:@"delete from ig_search where doc_id = ?", documentId];
-    if (!succeed) {
-        NSLog(@"failed delete: %@", [self.database lastError]);
-    }
+-(BOOL) indexDocument:(NSDictionary*)document withId:(NSString*)documentId {
+    NSAssert(documentId, @"documentId should not be nil");
+    [self.database beginTransaction];
 
-    [document enumerateKeysAndObjectsUsingBlock:^(NSString* field, NSString* value, BOOL *stop) {
-        NSAssert([field isKindOfClass:[NSString class]], @"document field should be string");
-        NSAssert([value isKindOfClass:[NSString class]], @"document value should be string");
-
-        BOOL succeed = [self.database executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value];
-        if (!succeed) {
-            NSLog(@"failed update: %@", [self.database lastError]);
+    [self.database executeUpdate:@"delete from ig_search where doc_id = ?", documentId];
+    
+    __block BOOL failure = NO;
+    [document enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSString* value, BOOL *stop) {
+        if (![key isKindOfClass:[NSString class]]) {
+            NSLog(@"document key must be a String");
+            failure = YES;
+            *stop = YES;
+        }
+        if (![value isKindOfClass:[NSString class]]) {
+            NSLog(@"document value must be a String");
+            failure = YES;
+            *stop = YES;
+        }
+        
+        if (![self.database executeUpdate:@"insert into ig_search (doc_id, key, value) values (?, ?, ?)", documentId, key, value]) {
+            NSLog(@"error inserting row: %@", [self.database lastError]);
+            failure = YES;
+            *stop = YES;
         }
     }];
+    
+    if (!failure) {
+        [self.database commit];
+        return YES;
+    } else {
+        [self.database rollback];
+        return NO;
+    }
 }
 
 -(NSUInteger) count {
@@ -65,11 +83,33 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(NSArray*) search:(NSString*)string {
-    
+    // Returns search by rank
+    FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, key, value FROM ig_search JOIN (\
+                               SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
+                               FROM ig_search \
+                               WHERE value MATCH ? \
+                               ORDER BY rank DESC \
+                       ) AS ranktable USING(doc_id)\
+                       ORDER BY ranktable.rank DESC", string];
+
+    NSMutableDictionary* results = [NSMutableDictionary dictionary];
+    while ([rs next]) {
+        NSString* docId = [rs stringForColumn:@"doc_id"];
+        NSString* field = [rs stringForColumn:@"key"];
+        NSString* value = [rs stringForColumn:@"value"];
+
+        NSMutableDictionary* doc = [results objectForKey:docId];
+        if (!doc) {
+            doc = [NSMutableDictionary dictionary];
+            [results setObject:doc forKey:docId];
+        }
+        [doc setObject:value forKey:field];
+    }
+    return [results allValues];
 }
 
 -(NSArray*) searchWithFields:(NSDictionary*)fields {
-    
+    return nil;    
 }
 
 #pragma mark - Private
@@ -87,7 +127,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(void) createTableIfNeeded {
-    BOOL result = [self.database executeUpdate:@"CREATE VIRTUAL TABLE IF NOT EXISTS ig_search USING FTS4 (id, doc_id, field, value, tokenize=mozporter)", nil];
+    BOOL result = [self.database executeUpdate:@"CREATE VIRTUAL TABLE IF NOT EXISTS ig_search USING FTS4 (id, doc_id, key, value, tokenize=mozporter)", nil];
     if (!result) {
         NSLog(@"failed create db: %@", [self.database lastError]);
     }
