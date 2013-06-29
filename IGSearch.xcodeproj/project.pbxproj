@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		41B38D01A1D942D493C01E0A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB03DA5C79974C51AE9DC13B /* libPods.a */; };
 		54DD665A177F480E00A01F98 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54DD6659177F480E00A01F98 /* UIKit.framework */; };
 		54DD665C177F480E00A01F98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54DD665B177F480E00A01F98 /* Foundation.framework */; };
 		54DD665E177F480E00A01F98 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54DD665D177F480E00A01F98 /* CoreGraphics.framework */; };
@@ -22,7 +23,10 @@
 		54DD667F177F480E00A01F98 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54DD6659177F480E00A01F98 /* UIKit.framework */; };
 		54DD6680177F480E00A01F98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54DD665B177F480E00A01F98 /* Foundation.framework */; };
 		54DD6688177F480E00A01F98 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 54DD6686177F480E00A01F98 /* InfoPlist.strings */; };
-		54DD668B177F480E00A01F98 /* IGSearchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD668A177F480E00A01F98 /* IGSearchTests.m */; };
+		54DD668B177F480E00A01F98 /* IGSearchSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD668A177F480E00A01F98 /* IGSearchSpec.m */; };
+		54DD66D9177F4B7E00A01F98 /* IGSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66D8177F4B7E00A01F98 /* IGSearch.m */; };
+		54DD66DA177F4B7E00A01F98 /* IGSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66D8177F4B7E00A01F98 /* IGSearch.m */; };
+		EB49FBA0B2234EC88FF8B351 /* libPods-IGSearchTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CF88C1F62B940D9B2F600EA /* libPods-IGSearchTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3AABD415521C42A6906C846B /* Pods-IGSearchTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IGSearchTests.xcconfig"; path = "Pods/Pods-IGSearchTests.xcconfig"; sourceTree = SOURCE_ROOT; };
 		54DD6656177F480E00A01F98 /* IGSearch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IGSearch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		54DD6659177F480E00A01F98 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		54DD665B177F480E00A01F98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -56,8 +61,12 @@
 		54DD667D177F480E00A01F98 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		54DD6685177F480E00A01F98 /* IGSearchTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "IGSearchTests-Info.plist"; sourceTree = "<group>"; };
 		54DD6687177F480E00A01F98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		54DD6689177F480E00A01F98 /* IGSearchTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IGSearchTests.h; sourceTree = "<group>"; };
-		54DD668A177F480E00A01F98 /* IGSearchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IGSearchTests.m; sourceTree = "<group>"; };
+		54DD668A177F480E00A01F98 /* IGSearchSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IGSearchSpec.m; sourceTree = "<group>"; };
+		54DD66D7177F4B7E00A01F98 /* IGSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IGSearch.h; path = Classes/IGSearch.h; sourceTree = "<group>"; };
+		54DD66D8177F4B7E00A01F98 /* IGSearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IGSearch.m; path = Classes/IGSearch.m; sourceTree = "<group>"; };
+		7CF88C1F62B940D9B2F600EA /* libPods-IGSearchTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IGSearchTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F96B7482BD9E41E7AC37CCC3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
+		FB03DA5C79974C51AE9DC13B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +77,7 @@
 				54DD665A177F480E00A01F98 /* UIKit.framework in Frameworks */,
 				54DD665C177F480E00A01F98 /* Foundation.framework in Frameworks */,
 				54DD665E177F480E00A01F98 /* CoreGraphics.framework in Frameworks */,
+				41B38D01A1D942D493C01E0A /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +88,7 @@
 				54DD667E177F480E00A01F98 /* SenTestingKit.framework in Frameworks */,
 				54DD667F177F480E00A01F98 /* UIKit.framework in Frameworks */,
 				54DD6680177F480E00A01F98 /* Foundation.framework in Frameworks */,
+				EB49FBA0B2234EC88FF8B351 /* libPods-IGSearchTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +102,8 @@
 				54DD6683177F480E00A01F98 /* IGSearchTests */,
 				54DD6658177F480E00A01F98 /* Frameworks */,
 				54DD6657177F480E00A01F98 /* Products */,
+				F96B7482BD9E41E7AC37CCC3 /* Pods.xcconfig */,
+				3AABD415521C42A6906C846B /* Pods-IGSearchTests.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -110,6 +123,8 @@
 				54DD665B177F480E00A01F98 /* Foundation.framework */,
 				54DD665D177F480E00A01F98 /* CoreGraphics.framework */,
 				54DD667D177F480E00A01F98 /* SenTestingKit.framework */,
+				FB03DA5C79974C51AE9DC13B /* libPods.a */,
+				7CF88C1F62B940D9B2F600EA /* libPods-IGSearchTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -117,6 +132,7 @@
 		54DD665F177F480E00A01F98 /* IGSearch */ = {
 			isa = PBXGroup;
 			children = (
+				54DD66D0177F4A2200A01F98 /* Classes */,
 				54DD6668177F480E00A01F98 /* IGAppDelegate.h */,
 				54DD6669177F480E00A01F98 /* IGAppDelegate.m */,
 				54DD6671177F480E00A01F98 /* IGViewController.h */,
@@ -144,8 +160,7 @@
 		54DD6683177F480E00A01F98 /* IGSearchTests */ = {
 			isa = PBXGroup;
 			children = (
-				54DD6689177F480E00A01F98 /* IGSearchTests.h */,
-				54DD668A177F480E00A01F98 /* IGSearchTests.m */,
+				54DD668A177F480E00A01F98 /* IGSearchSpec.m */,
 				54DD6684177F480E00A01F98 /* Supporting Files */,
 			);
 			path = IGSearchTests;
@@ -160,6 +175,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		54DD66D0177F4A2200A01F98 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				54DD66D7177F4B7E00A01F98 /* IGSearch.h */,
+				54DD66D8177F4B7E00A01F98 /* IGSearch.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -167,9 +191,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 54DD668E177F480E00A01F98 /* Build configuration list for PBXNativeTarget "IGSearch" */;
 			buildPhases = (
+				E3690DDFC7A3488CB0F25634 /* Check Pods Manifest.lock */,
 				54DD6652177F480E00A01F98 /* Sources */,
 				54DD6653177F480E00A01F98 /* Frameworks */,
 				54DD6654177F480E00A01F98 /* Resources */,
+				5E295E4CEC744597B60AE820 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -184,10 +210,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 54DD6691177F480E00A01F98 /* Build configuration list for PBXNativeTarget "IGSearchTests" */;
 			buildPhases = (
+				C094B15DB67F455CBF9C212A /* Check Pods Manifest.lock */,
 				54DD6677177F480E00A01F98 /* Sources */,
 				54DD6678177F480E00A01F98 /* Frameworks */,
 				54DD6679177F480E00A01F98 /* Resources */,
 				54DD667A177F480E00A01F98 /* ShellScript */,
+				04A3D8A109DA47E79A97C656 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -251,6 +279,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		04A3D8A109DA47E79A97C656 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-IGSearchTests-resources.sh\"\n";
+		};
 		54DD667A177F480E00A01F98 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -264,6 +306,48 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
+		5E295E4CEC744597B60AE820 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+		};
+		C094B15DB67F455CBF9C212A /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+		};
+		E3690DDFC7A3488CB0F25634 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -274,6 +358,7 @@
 				54DD6666177F480E00A01F98 /* main.m in Sources */,
 				54DD666A177F480E00A01F98 /* IGAppDelegate.m in Sources */,
 				54DD6673177F480E00A01F98 /* IGViewController.m in Sources */,
+				54DD66D9177F4B7E00A01F98 /* IGSearch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,7 +366,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54DD668B177F480E00A01F98 /* IGSearchTests.m in Sources */,
+				54DD668B177F480E00A01F98 /* IGSearchSpec.m in Sources */,
+				54DD66DA177F4B7E00A01F98 /* IGSearch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,10 +467,13 @@
 		};
 		54DD668F177F480E00A01F98 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F96B7482BD9E41E7AC37CCC3 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
+				HEADER_SEARCH_PATHS = vendor/Kiwi/Classes;
 				INFOPLIST_FILE = "IGSearch/IGSearch-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -392,10 +481,13 @@
 		};
 		54DD6690177F480E00A01F98 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F96B7482BD9E41E7AC37CCC3 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
+				HEADER_SEARCH_PATHS = vendor/Kiwi/Classes;
 				INFOPLIST_FILE = "IGSearch/IGSearch-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -403,6 +495,7 @@
 		};
 		54DD6692177F480E00A01F98 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AABD415521C42A6906C846B /* Pods-IGSearchTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/IGSearch.app/IGSearch";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -411,7 +504,9 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "IGSearchTests/IGSearchTests-Info.plist";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -420,6 +515,7 @@
 		};
 		54DD6693177F480E00A01F98 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AABD415521C42A6906C846B /* Pods-IGSearchTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/IGSearch.app/IGSearch";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -428,7 +524,9 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "IGSearchTests/IGSearchTests-Info.plist";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -454,6 +552,7 @@
 				54DD6690177F480E00A01F98 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		54DD6691177F480E00A01F98 /* Build configuration list for PBXNativeTarget "IGSearchTests" */ = {
 			isa = XCConfigurationList;
@@ -462,6 +561,7 @@
 				54DD6693177F480E00A01F98 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

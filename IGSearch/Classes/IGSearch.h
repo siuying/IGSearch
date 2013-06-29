@@ -1,13 +1,13 @@
 //
-//  IGSearchTests.h
-//  IGSearchTests
+//  IGSearch.h
+//  IGSearch
 //
 //  Created by Chong Francis on 13年6月30日.
 //  Copyright (c) 2013年 Ignition Soft. All rights reserved.
 //
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <Foundation/Foundation.h>
 
-@interface IGSearchTests : SenTestCase
+@interface IGSearch : NSObject
 
 @end

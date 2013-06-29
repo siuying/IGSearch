@@ -1,0 +1,19 @@
+PODS:
+  - FMDB/common (2.1)
+  - FMDB/standalone (2.1):
+    - FMDB/common
+    - sqlite3
+  - Kiwi (2.2)
+  - sqlite3 (3.7.17.0)
+
+DEPENDENCIES:
+  - FMDB/standalone
+  - Kiwi (= 2.2)
+  - sqlite3
+
+SPEC CHECKSUMS:
+  FMDB: 66010e9b750838dea71748df591fc118598f21c7
+  Kiwi: db174bba4ee8068b15d7122f1b22fb64b7c1d378
+  sqlite3: 98f504c3af2ac60f9bd94db5c98fb71ef045604d
+
+COCOAPODS: 0.20.2
