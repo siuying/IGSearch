@@ -45,9 +45,9 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     [self.database executeUpdate:@"delete from ig_search where doc_id = ?", documentId];
     
     __block BOOL failure = NO;
-    [document enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSString* value, BOOL *stop) {
-        if (![key isKindOfClass:[NSString class]]) {
-            NSLog(@"document key must be a String");
+    [document enumerateKeysAndObjectsUsingBlock:^(NSString* field, NSString* value, BOOL *stop) {
+        if (![field isKindOfClass:[NSString class]]) {
+            NSLog(@"document field must be a String");
             failure = YES;
             *stop = YES;
         }
@@ -57,7 +57,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
             *stop = YES;
         }
         
-        if (![self.database executeUpdate:@"insert into ig_search (doc_id, key, value) values (?, ?, ?)", documentId, key, value]) {
+        if (![self.database executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value]) {
             NSLog(@"error inserting row: %@", [self.database lastError]);
             failure = YES;
             *stop = YES;
@@ -83,8 +83,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(NSArray*) search:(NSString*)string {
-    // Returns search by rank
-    FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, key, value FROM ig_search JOIN (\
+    FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
                                SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
                                FROM ig_search \
                                WHERE value MATCH ? \
@@ -95,7 +94,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     NSMutableDictionary* results = [NSMutableDictionary dictionary];
     while ([rs next]) {
         NSString* docId = [rs stringForColumn:@"doc_id"];
-        NSString* field = [rs stringForColumn:@"key"];
+        NSString* field = [rs stringForColumn:@"field"];
         NSString* value = [rs stringForColumn:@"value"];
 
         NSMutableDictionary* doc = [results objectForKey:docId];
@@ -108,8 +107,28 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     return [results allValues];
 }
 
--(NSArray*) searchWithFields:(NSDictionary*)fields {
-    return nil;    
+-(NSArray*) search:(NSString*)string withField:(NSString*)field {
+    NSMutableDictionary* results = [NSMutableDictionary dictionary];
+    FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
+                       SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
+                       FROM ig_search \
+                       WHERE value MATCH ? AND field = ? \
+                       ORDER BY rank DESC \
+                       ) AS ranktable USING(doc_id)\
+                       ORDER BY ranktable.rank DESC", string, field];
+    while ([rs next]) {
+        NSString* docId = [rs stringForColumn:@"doc_id"];
+        NSString* field = [rs stringForColumn:@"field"];
+        NSString* value = [rs stringForColumn:@"value"];
+        
+        NSMutableDictionary* doc = [results objectForKey:docId];
+        if (!doc) {
+            doc = [NSMutableDictionary dictionary];
+            [results setObject:doc forKey:docId];
+        }
+        [doc setObject:value forKey:field];
+    }
+    return [results allValues];
 }
 
 #pragma mark - Private
@@ -127,7 +146,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(void) createTableIfNeeded {
-    BOOL result = [self.database executeUpdate:@"CREATE VIRTUAL TABLE IF NOT EXISTS ig_search USING FTS4 (id, doc_id, key, value, tokenize=mozporter)", nil];
+    BOOL result = [self.database executeUpdate:@"CREATE VIRTUAL TABLE IF NOT EXISTS ig_search USING FTS4 (id, doc_id, field, value, tokenize=mozporter)", nil];
     if (!result) {
         NSLog(@"failed create db: %@", [self.database lastError]);
     }

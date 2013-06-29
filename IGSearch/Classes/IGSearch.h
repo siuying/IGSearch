@@ -15,6 +15,9 @@
 
 -(id) initWithPath:(NSString*) path;
 
+/*
+ Close the database.
+ */
 -(BOOL) close;
 
 /* 
@@ -30,10 +33,18 @@
 -(NSUInteger) count;
 
 /*
- Search the database with specifc string.
+ Search the database with string on any fields.
+ @param query the search query
+ @return NSArray* array of document indexed, having fields contain the string, sorted by rank.
  */
 -(NSArray*) search:(NSString*)string;
 
--(NSArray*) searchWithFields:(NSDictionary*)fields;
+/*
+ Search the database with string on specific field.
+ @param query The search query.
+ @param field The field to search.
+ @return NSArray* array of document indexed, having fields contain the string, sorted by rank.
+ */
+-(NSArray*) search:(NSString*)string withField:(NSString*)field;
 
 @end

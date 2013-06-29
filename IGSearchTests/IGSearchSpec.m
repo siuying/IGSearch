@@ -58,6 +58,25 @@ describe(@"IGSearch", ^{
             [[games[0] should] equal:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"}];
         });
     });
+    
+    describe(@"-search:withField:", ^{
+        it(@"should search document", ^{
+            [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
+            [search indexDocument:@{@"title": @"Super Mario Bros", @"system": @"NES"} withId:@"2"];
+            [search indexDocument:@{@"title": @"Sonic", @"system": @"Mega Drive"} withId:@"3"];
+            [search indexDocument:@{@"title": @"Mega Man", @"system": @"NES"} withId:@"4"];
+
+            NSArray* games = [search search:@"Mega" withField:@"system"];
+            [[games shouldNot] beNil];
+            [[games should] haveCountOf:1];
+            [[games[0][@"title"] should] equal:@"Sonic"];
+            
+            games = [search search:@"Mega" withField:@"title"];
+            [[games shouldNot] beNil];
+            [[games should] haveCountOf:1];
+            [[games[0][@"title"] should] equal:@"Mega Man"];
+        });
+    });
 });
 
 SPEC_END
