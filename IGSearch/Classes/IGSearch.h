@@ -7,7 +7,24 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FMDatabase.h"
 
 @interface IGSearch : NSObject
+
+@property (nonatomic, strong) FMDatabase *database;
+
+-(id) initWithPath:(NSString*) path;
+
+-(BOOL) close;
+
+// Index a document
+-(void) indexDocument:(NSDictionary*)document withId:(NSString*)identifier;
+
+// count number of document was indexed
+-(NSUInteger) count;
+
+-(NSArray*) search:(NSString*)string;
+
+-(NSArray*) searchWithFields:(NSDictionary*)fields;
 
 @end

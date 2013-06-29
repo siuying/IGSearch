@@ -26,6 +26,12 @@
 		54DD668B177F480E00A01F98 /* IGSearchSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD668A177F480E00A01F98 /* IGSearchSpec.m */; };
 		54DD66D9177F4B7E00A01F98 /* IGSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66D8177F4B7E00A01F98 /* IGSearch.m */; };
 		54DD66DA177F4B7E00A01F98 /* IGSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66D8177F4B7E00A01F98 /* IGSearch.m */; };
+		54DD66E8177F4F0500A01F98 /* fts3_porter.c in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66E2177F4F0500A01F98 /* fts3_porter.c */; };
+		54DD66E9177F4F0500A01F98 /* fts3_porter.c in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66E2177F4F0500A01F98 /* fts3_porter.c */; };
+		54DD66EA177F4F0500A01F98 /* Normalize.c in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66E4177F4F0500A01F98 /* Normalize.c */; };
+		54DD66EB177F4F0500A01F98 /* Normalize.c in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66E4177F4F0500A01F98 /* Normalize.c */; };
+		54DD66EC177F4F0500A01F98 /* rank.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66E6177F4F0500A01F98 /* rank.m */; };
+		54DD66ED177F4F0500A01F98 /* rank.m in Sources */ = {isa = PBXBuildFile; fileRef = 54DD66E6177F4F0500A01F98 /* rank.m */; };
 		EB49FBA0B2234EC88FF8B351 /* libPods-IGSearchTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CF88C1F62B940D9B2F600EA /* libPods-IGSearchTests.a */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +70,11 @@
 		54DD668A177F480E00A01F98 /* IGSearchSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IGSearchSpec.m; sourceTree = "<group>"; };
 		54DD66D7177F4B7E00A01F98 /* IGSearch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IGSearch.h; path = Classes/IGSearch.h; sourceTree = "<group>"; };
 		54DD66D8177F4B7E00A01F98 /* IGSearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IGSearch.m; path = Classes/IGSearch.m; sourceTree = "<group>"; };
+		54DD66E2177F4F0500A01F98 /* fts3_porter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = fts3_porter.c; path = fts3/fts3_porter.c; sourceTree = "<group>"; };
+		54DD66E3177F4F0500A01F98 /* fts3_tokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fts3_tokenizer.h; path = fts3/fts3_tokenizer.h; sourceTree = "<group>"; };
+		54DD66E4177F4F0500A01F98 /* Normalize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Normalize.c; path = fts3/Normalize.c; sourceTree = "<group>"; };
+		54DD66E5177F4F0500A01F98 /* rank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rank.h; path = fts3/rank.h; sourceTree = "<group>"; };
+		54DD66E6177F4F0500A01F98 /* rank.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = rank.m; path = fts3/rank.m; sourceTree = "<group>"; };
 		7CF88C1F62B940D9B2F600EA /* libPods-IGSearchTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IGSearchTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F96B7482BD9E41E7AC37CCC3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		FB03DA5C79974C51AE9DC13B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,6 +149,7 @@
 				54DD6671177F480E00A01F98 /* IGViewController.h */,
 				54DD6672177F480E00A01F98 /* IGViewController.m */,
 				54DD6674177F480E00A01F98 /* IGViewController.xib */,
+				54DD66DF177F4F0500A01F98 /* vendor */,
 				54DD6660177F480E00A01F98 /* Supporting Files */,
 			);
 			path = IGSearch;
@@ -182,6 +194,26 @@
 				54DD66D8177F4B7E00A01F98 /* IGSearch.m */,
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		54DD66DF177F4F0500A01F98 /* vendor */ = {
+			isa = PBXGroup;
+			children = (
+				54DD66E0177F4F0500A01F98 /* sqlite3-fts-cjk */,
+			);
+			path = vendor;
+			sourceTree = SOURCE_ROOT;
+		};
+		54DD66E0177F4F0500A01F98 /* sqlite3-fts-cjk */ = {
+			isa = PBXGroup;
+			children = (
+				54DD66E2177F4F0500A01F98 /* fts3_porter.c */,
+				54DD66E3177F4F0500A01F98 /* fts3_tokenizer.h */,
+				54DD66E4177F4F0500A01F98 /* Normalize.c */,
+				54DD66E5177F4F0500A01F98 /* rank.h */,
+				54DD66E6177F4F0500A01F98 /* rank.m */,
+			);
+			path = "sqlite3-fts-cjk";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,6 +391,9 @@
 				54DD666A177F480E00A01F98 /* IGAppDelegate.m in Sources */,
 				54DD6673177F480E00A01F98 /* IGViewController.m in Sources */,
 				54DD66D9177F4B7E00A01F98 /* IGSearch.m in Sources */,
+				54DD66E8177F4F0500A01F98 /* fts3_porter.c in Sources */,
+				54DD66EA177F4F0500A01F98 /* Normalize.c in Sources */,
+				54DD66EC177F4F0500A01F98 /* rank.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,6 +403,9 @@
 			files = (
 				54DD668B177F480E00A01F98 /* IGSearchSpec.m in Sources */,
 				54DD66DA177F4B7E00A01F98 /* IGSearch.m in Sources */,
+				54DD66E9177F4F0500A01F98 /* fts3_porter.c in Sources */,
+				54DD66EB177F4F0500A01F98 /* Normalize.c in Sources */,
+				54DD66ED177F4F0500A01F98 /* rank.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,9 +509,10 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
-				HEADER_SEARCH_PATHS = vendor/Kiwi/Classes;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "IGSearch/IGSearch-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -485,9 +524,10 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
-				HEADER_SEARCH_PATHS = vendor/Kiwi/Classes;
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "IGSearch/IGSearch-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
