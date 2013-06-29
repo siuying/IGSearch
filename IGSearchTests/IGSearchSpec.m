@@ -57,6 +57,22 @@ describe(@"IGSearch", ^{
             [[games should] haveCountOf:1];
             [[games[0] should] equal:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"}];
         });
+
+        it(@"should search CJK document", ^{
+            [search indexDocument:@{@"title": @"當然，也許一個是印度人，沒錯！"} withId:@"1"];
+            [search indexDocument:@{@"title": @"這一個月是訂出標準，對豪宅短期買賣，你口中只講冰冷的數字，在短時間內，嘉蘭部落的需求原為70戶，開放大陸觀光客來台，它在這部分是負責監理工作，哪怕是捅了馬蜂窩，主計長不是今天才做的。"} withId:@"2"];
+            [search indexDocument:@{@"title": @"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"} withId:@"3"];
+            
+            NSArray* results = [search search:@"印度人"];
+            [[results shouldNot] beNil];
+            [[results should] haveCountOf:1];
+            [[results[0][@"title"] should] equal:@"當然，也許一個是印度人，沒錯！"];
+            
+            results = [search search:@"還不賴"];
+            [[results shouldNot] beNil];
+            [[results should] haveCountOf:1];
+            [[results[0][@"title"] should] equal:@"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"];
+        });
     });
     
     describe(@"-search:withField:", ^{
@@ -75,6 +91,22 @@ describe(@"IGSearch", ^{
             [[games shouldNot] beNil];
             [[games should] haveCountOf:1];
             [[games[0][@"title"] should] equal:@"Mega Man"];
+        });
+        
+        it(@"should search CJK document", ^{
+            [search indexDocument:@{@"title": @"當然，也許一個是印度人，沒錯！"} withId:@"1"];
+            [search indexDocument:@{@"title": @"這一個月是訂出標準，對豪宅短期買賣，你口中只講冰冷的數字，在短時間內，嘉蘭部落的需求原為70戶，開放大陸觀光客來台，它在這部分是負責監理工作，哪怕是捅了馬蜂窩，主計長不是今天才做的。"} withId:@"2"];
+            [search indexDocument:@{@"title": @"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"} withId:@"3"];
+            
+            NSArray* results = [search search:@"印度人" withField:@"title"];
+            [[results shouldNot] beNil];
+            [[results should] haveCountOf:1];
+            [[results[0][@"title"] should] equal:@"當然，也許一個是印度人，沒錯！"];
+            
+            results = [search search:@"還不賴" withField:@"title"];
+            [[results shouldNot] beNil];
+            [[results should] haveCountOf:1];
+            [[results[0][@"title"] should] equal:@"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"];
         });
     });
 });
