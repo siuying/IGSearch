@@ -96,21 +96,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
                                ORDER BY rank DESC \
                        ) AS ranktable USING(doc_id)\
                        ORDER BY ranktable.rank DESC", string];
-
-    NSMutableDictionary* results = [NSMutableDictionary dictionary];
-    while ([rs next]) {
-        NSString* docId = [rs stringForColumn:@"doc_id"];
-        NSString* field = [rs stringForColumn:@"field"];
-        NSString* value = [rs stringForColumn:@"value"];
-
-        NSMutableDictionary* doc = [results objectForKey:docId];
-        if (!doc) {
-            doc = [NSMutableDictionary dictionary];
-            [results setObject:doc forKey:docId];
-        }
-        [doc setObject:value forKey:field];
-    }
-    return [results allValues];
+    return [self resultWithResultSet:rs];
 }
 
 -(NSArray*) search:(NSString*)string withField:(NSString*)field {
@@ -125,7 +111,6 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
                                userInfo:nil] raise];
     }
 
-    NSMutableDictionary* results = [NSMutableDictionary dictionary];
     FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
                        SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
                        FROM ig_search \
@@ -133,19 +118,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
                        ORDER BY rank DESC \
                        ) AS ranktable USING(doc_id)\
                        ORDER BY ranktable.rank DESC", string, field];
-    while ([rs next]) {
-        NSString* docId = [rs stringForColumn:@"doc_id"];
-        NSString* field = [rs stringForColumn:@"field"];
-        NSString* value = [rs stringForColumn:@"value"];
-        
-        NSMutableDictionary* doc = [results objectForKey:docId];
-        if (!doc) {
-            doc = [NSMutableDictionary dictionary];
-            [results setObject:doc forKey:docId];
-        }
-        [doc setObject:value forKey:field];
-    }
-    return [results allValues];
+    return [self resultWithResultSet:rs];
 }
 
 #pragma mark - Private
@@ -167,6 +140,23 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     if (!result) {
         NSLog(@"failed create db: %@", [self.database lastError]);
     }
+}
+
+-(NSArray*) resultWithResultSet:(FMResultSet*)resultSet {
+    NSMutableDictionary* results = [NSMutableDictionary dictionary];
+    while ([resultSet next]) {
+        NSString* docId = [resultSet stringForColumn:@"doc_id"];
+        NSString* field = [resultSet stringForColumn:@"field"];
+        NSString* value = [resultSet stringForColumn:@"value"];
+        
+        NSMutableDictionary* doc = [results objectForKey:docId];
+        if (!doc) {
+            doc = [NSMutableDictionary dictionary];
+            [results setObject:doc forKey:docId];
+        }
+        [doc setObject:value forKey:field];
+    }
+    return [results allValues];
 }
 
 @end

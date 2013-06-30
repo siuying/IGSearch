@@ -47,6 +47,12 @@ describe(@"IGSearch", ^{
             
             [[theValue([search count]) should] equal:theValue(0)];
         });
+        
+        it(@"should find only one object even two fields matched", ^{
+            [search indexDocument:@{@"title": @"Mega Man 10", @"system": @"Mega Drive"} withId:@"1"];
+            NSArray* results = [search search:@"Mega"];
+            [[theValue([results count]) should] equal:theValue(1)];
+        });
     });
 
     describe(@"-search:", ^{
