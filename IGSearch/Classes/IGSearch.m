@@ -38,38 +38,38 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     return [self.database close];
 }
 
--(BOOL) indexDocument:(NSDictionary*)document withId:(NSString*)documentId {
-    NSAssert(documentId, @"documentId should not be nil");
+-(void) indexDocument:(NSDictionary*)document withId:(NSString*)documentId {
+    if (!documentId) {
+        [[NSException exceptionWithName:NSInvalidArgumentException
+                                 reason:@"documentId cannot be nil"
+                               userInfo:nil] raise];
+    }
     [self.database beginTransaction];
 
     [self.database executeUpdate:@"delete from ig_search where doc_id = ?", documentId];
     
-    __block BOOL failure = NO;
-    [document enumerateKeysAndObjectsUsingBlock:^(NSString* field, NSString* value, BOOL *stop) {
-        if (![field isKindOfClass:[NSString class]]) {
-            NSLog(@"document field must be a String");
-            failure = YES;
-            *stop = YES;
-        }
-        if (![value isKindOfClass:[NSString class]]) {
-            NSLog(@"document value must be a String");
-            failure = YES;
-            *stop = YES;
-        }
-        
-        if (![self.database executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value]) {
-            NSLog(@"error inserting row: %@", [self.database lastError]);
-            failure = YES;
-            *stop = YES;
-        }
-    }];
-    
-    if (!failure) {
+    @try {
+        [document enumerateKeysAndObjectsUsingBlock:^(NSString* field, NSString* value, BOOL *stop) {
+            if (![field isKindOfClass:[NSString class]]) {
+                [[NSException exceptionWithName:NSInvalidArgumentException
+                                         reason:@"document field must be a String"
+                                       userInfo:nil] raise];
+            }
+
+            if (![value isKindOfClass:[NSString class]]) {
+                NSLog(@"document value must be a String");
+                [[NSException exceptionWithName:NSInvalidArgumentException
+                                         reason:@"document value must be a String"
+                                       userInfo:nil] raise];
+            }
+
+            [self.database executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value];
+        }];
         [self.database commit];
-        return YES;
-    } else {
+    }
+    @catch (NSException *exception) {
         [self.database rollback];
-        return NO;
+        @throw(exception);
     }
 }
 
@@ -83,6 +83,12 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(NSArray*) search:(NSString*)string {
+    if (!string) {
+        [[NSException exceptionWithName:NSInvalidArgumentException
+                                 reason:@"search query cannot be nil"
+                               userInfo:nil] raise];
+    }
+
     FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
                                SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
                                FROM ig_search \
@@ -108,6 +114,17 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(NSArray*) search:(NSString*)string withField:(NSString*)field {
+    if (!string) {
+        [[NSException exceptionWithName:NSInvalidArgumentException
+                                 reason:@"search query cannot be nil"
+                               userInfo:nil] raise];
+    }
+    if (!field) {
+        [[NSException exceptionWithName:NSInvalidArgumentException
+                                 reason:@"search field cannot be nil"
+                               userInfo:nil] raise];
+    }
+
     NSMutableDictionary* results = [NSMutableDictionary dictionary];
     FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
                        SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \

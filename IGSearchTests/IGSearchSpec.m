@@ -25,23 +25,26 @@ describe(@"IGSearch", ^{
             [[theValue([search count]) should] equal:theValue(1)];
         });
     
-        it(@"should raise error when doc id is nil", ^{
+        it(@"should raise exception when doc id is nil", ^{
             [[theBlock(^{
                 [search indexDocument:@{@"title": @"Zelda"} withId:nil];
             }) should] raise];
             [[theValue([search count]) should] equal:theValue(0)];
         });
 
-        it(@"should raise error when input document key or value is not string", ^{
-            BOOL succeed = [search indexDocument:@{@"title": @[]} withId:@"1"];
-            [[theValue(succeed) should] equal:theValue(NO)];
+        it(@"should raise exception when input document key or value is not string", ^{
+            [[theBlock(^{
+                [search indexDocument:@{@"title": @[]} withId:@"1"];
+            }) should] raise];
+
+            [[theBlock(^{
+                [search indexDocument:@{@[]: @"title"} withId:@"1"];
+            }) should] raise];
             
-            succeed = [search indexDocument:@{@[]: @"title"} withId:@"1"];
-            [[theValue(succeed) should] equal:theValue(NO)];
-
-            succeed = [search indexDocument:@{@"title": @"Mario", @"system": @[]} withId:@"1"];
-            [[theValue(succeed) should] equal:theValue(NO)];
-
+            [[theBlock(^{
+                [search indexDocument:@{@"title": @"Mario", @"system": @[]} withId:@"1"];
+            }) should] raise];
+            
             [[theValue([search count]) should] equal:theValue(0)];
         });
     });

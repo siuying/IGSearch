@@ -25,7 +25,7 @@
  @param document The document. Must be a dictionary with key and values as String.
  @param docId A string key repredent the document.
  */
--(BOOL) indexDocument:(NSDictionary*)document withId:(NSString*)docId;
+-(void) indexDocument:(NSDictionary*)document withId:(NSString*)docId;
 
 /*
  Count number of document was indexed.
