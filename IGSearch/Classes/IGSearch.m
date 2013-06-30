@@ -87,6 +87,10 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(NSArray*) search:(NSString*)query withField:(NSString*)field {
+    return [self search:query withField:field fetchIdOnly:NO];
+}
+
+-(NSArray*) search:(NSString*)query withField:(NSString*)field fetchIdOnly:(BOOL)fetchIdOnly {
     if (!query) {
         [[NSException exceptionWithName:NSInvalidArgumentException
                                  reason:@"search query cannot be nil"
@@ -94,25 +98,37 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     }
 
     FMResultSet* rs = nil;
-    if (field == nil) {
-        rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
-              SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
-              FROM ig_search \
-              WHERE value MATCH ? \
-              ORDER BY rank DESC \
-              ) AS ranktable USING(doc_id)\
-              ORDER BY ranktable.rank DESC", query];
+    NSMutableString* sql = [NSMutableString string];
+    if (fetchIdOnly) {
+        [sql appendString:@"SELECT doc_id FROM ig_search "];
     } else {
-        rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
-             SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
-             FROM ig_search \
-             WHERE value MATCH ? AND field = ? \
-             ORDER BY rank DESC \
-             ) AS ranktable USING(doc_id)\
-             ORDER BY ranktable.rank DESC", query, field];
-
+        [sql appendString:@"SELECT doc_id, field, value FROM ig_search "];
     }
-    return [self resultWithResultSet:rs];
+    
+    [sql appendString:@"JOIN (\
+SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
+FROM ig_search "];
+
+    if (field == nil) {
+        [sql appendString:@"WHERE value MATCH ? "];
+    } else {
+        [sql appendString:@"WHERE field = ? AND value MATCH ? "];
+    }
+
+    [sql appendString:@"ORDER BY rank DESC ) AS ranktable USING(doc_id) "];
+    [sql appendString:@"ORDER BY ranktable.rank DESC "];
+    
+    if (field == nil) {
+        rs = [self.database executeQuery:sql, query];
+    } else {
+        rs = [self.database executeQuery:sql, field, query];
+    }
+
+    if (fetchIdOnly) {
+        return [self documentIdsWithResultSet:rs];
+    } else {
+        return [self documentWithResultSet:rs];
+    }
 }
 
 #pragma mark - Private
@@ -136,7 +152,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     }
 }
 
--(NSArray*) resultWithResultSet:(FMResultSet*)resultSet {
+-(NSArray*) documentWithResultSet:(FMResultSet*)resultSet {
     NSMutableDictionary* results = [NSMutableDictionary dictionary];
     while ([resultSet next]) {
         NSString* docId = [resultSet stringForColumn:@"doc_id"];
@@ -151,6 +167,15 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         [doc setObject:value forKey:field];
     }
     return [results allValues];
+}
+
+-(NSArray*) documentIdsWithResultSet:(FMResultSet*)resultSet {
+    NSMutableSet* results = [NSMutableSet set];
+    while ([resultSet next]) {
+        NSString* docId = [resultSet stringForColumn:@"doc_id"];
+        [results addObject:docId];
+    }
+    return [results allObjects];
 }
 
 @end
