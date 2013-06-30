@@ -23,7 +23,7 @@
 /* 
  Index a doucment.
  @param document The document. Must be a dictionary with key and values as String.
- @param docId A string key repredent the document.
+ @param docId A string key represent the document.
  */
 -(void) indexDocument:(NSDictionary*)document withId:(NSString*)docId;
 
