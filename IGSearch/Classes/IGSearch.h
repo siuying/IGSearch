@@ -37,20 +37,27 @@
 -(NSUInteger) count;
 
 /*
- Search the database with string on any fields.
+ Search the database with string on any fields sorted by match rank.
  @param query the search query
  @return NSArray* array of document indexed, having fields contain the string, sorted by rank.
  */
 -(NSArray*) search:(NSString*)query;
 
 /*
- Search the database with string on specific field.
+ Search the database with string on specific field sorted by match rank.
  @param query The search query.
  @param field The field to search. if nil, search all fields, otherwise only search on specific field.
  @return NSArray* array of document indexed, having fields contain the string, sorted by rank.
  */
 -(NSArray*) search:(NSString*)query withField:(NSString*)field;
 
+/*
+ Search the database with string on specific field sorted by match rank, optionally only return the doc ID.
+ @param query The search query.
+ @param field The field to search. if nil, search all fields, otherwise only search on specific field.
+ @param fetchIdOnly Only return the doc id of result. If YES, only fetch the ID. otherwise, return whole document.
+ @return NSArray* If fetchIdOnly is YES, return array of document IDs. Otherwise, return array of documents.
+ */
 -(NSArray*) search:(NSString*)query withField:(NSString*)field fetchIdOnly:(BOOL)fetchIdOnly;
 
 @end

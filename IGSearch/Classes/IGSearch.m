@@ -111,9 +111,17 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         [sql appendString:@"SELECT doc_id, field, value FROM ig_search "];
     }
     
-    [sql appendString:@"JOIN (\
-SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
-FROM ig_search "];
+    if (fetchIdOnly) {
+        [sql appendString:@"JOIN (\
+         SELECT distinct doc_id, rank(matchinfo(ig_search), 1) AS rank \
+         FROM ig_search "];
+        
+    } else {
+        [sql appendString:@"JOIN (\
+         SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
+         FROM ig_search "];
+        
+    }
 
     if (field == nil) {
         [sql appendString:@"WHERE value MATCH ? "];

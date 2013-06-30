@@ -130,10 +130,17 @@ describe(@"IGSearch", ^{
     describe(@"-search:withField:fetchIdOnly:", ^{
         it(@"should return only ID if the fetchIdOnly is YES", ^{
             [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
+            [search indexDocument:@{@"title": @"Mega Man", @"system": @"Mega Drive"} withId:@"2"];
+
             NSArray* results = [search search:@"Street" withField:@"title" fetchIdOnly:YES];
             [[results should] haveCountOf:1];
             [[results[0] should] beKindOfClass:[NSString class]];
             [[results[0] should] equal:@"1"];
+            
+            results = [search search:@"Mega" withField:nil fetchIdOnly:YES];
+            [[results should] haveCountOf:1];
+            [[results[0] should] beKindOfClass:[NSString class]];
+            [[results[0] should] equal:@"2"];
         });
     });
 });
