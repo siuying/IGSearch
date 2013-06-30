@@ -42,6 +42,12 @@ Search the document is simple:
 [search search:@"Mega" withField:@"title"]; // @[ @{@"title": @"Mega Man", @"system": @"NES"}  ]
 ```
 
+Or search only the document ID:
+
+```objective-c
+[search search:@"Mega" withField:@"title" fetchIdOnly:YES]; // @[ @"4" ]
+```
+
 ## Credits
 
 Use SQLite porter stemmer from [Mozilla Thunderbird](https://bugzilla.mozilla.org/show_bug.cgi?id=472764), Mozilla Public License.

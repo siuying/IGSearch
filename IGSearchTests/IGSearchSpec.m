@@ -142,6 +142,15 @@ describe(@"IGSearch", ^{
             [[results[0] should] beKindOfClass:[NSString class]];
             [[results[0] should] equal:@"2"];
         });
+
+        it(@"should return a dictionary if the fetchIdOnly is NO", ^{
+            [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
+            
+            NSArray* results = [search search:@"Street" withField:@"title" fetchIdOnly:NO];
+            [[results should] haveCountOf:1];
+            [[results[0] should] beKindOfClass:[NSDictionary class]];
+            [[results[0][@"system"] should] equal:@"Xbox 360"];
+        });
     });
 });
 
