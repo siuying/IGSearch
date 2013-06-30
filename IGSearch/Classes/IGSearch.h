@@ -42,7 +42,7 @@
 /*
  Search the database with string on specific field.
  @param query The search query.
- @param field The field to search.
+ @param field The field to search. if nil, search all fields, otherwise only search on specific field.
  @return NSArray* array of document indexed, having fields contain the string, sorted by rank.
  */
 -(NSArray*) search:(NSString*)string withField:(NSString*)field;

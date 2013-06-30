@@ -82,42 +82,36 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     }
 }
 
--(NSArray*) search:(NSString*)string {
-    if (!string) {
-        [[NSException exceptionWithName:NSInvalidArgumentException
-                                 reason:@"search query cannot be nil"
-                               userInfo:nil] raise];
-    }
-
-    FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
-                               SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
-                               FROM ig_search \
-                               WHERE value MATCH ? \
-                               ORDER BY rank DESC \
-                       ) AS ranktable USING(doc_id)\
-                       ORDER BY ranktable.rank DESC", string];
-    return [self resultWithResultSet:rs];
+-(NSArray*) search:(NSString*)query {
+    return [self search:query withField:nil];
 }
 
--(NSArray*) search:(NSString*)string withField:(NSString*)field {
-    if (!string) {
+-(NSArray*) search:(NSString*)query withField:(NSString*)field {
+    if (!query) {
         [[NSException exceptionWithName:NSInvalidArgumentException
                                  reason:@"search query cannot be nil"
                                userInfo:nil] raise];
     }
-    if (!field) {
-        [[NSException exceptionWithName:NSInvalidArgumentException
-                                 reason:@"search field cannot be nil"
-                               userInfo:nil] raise];
-    }
 
-    FMResultSet* rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
-                       SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
-                       FROM ig_search \
-                       WHERE value MATCH ? AND field = ? \
-                       ORDER BY rank DESC \
-                       ) AS ranktable USING(doc_id)\
-                       ORDER BY ranktable.rank DESC", string, field];
+    FMResultSet* rs = nil;
+    if (field == nil) {
+        rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
+              SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
+              FROM ig_search \
+              WHERE value MATCH ? \
+              ORDER BY rank DESC \
+              ) AS ranktable USING(doc_id)\
+              ORDER BY ranktable.rank DESC", query];
+    } else {
+        rs = [self.database executeQuery:@"SELECT doc_id, field, value FROM ig_search JOIN (\
+             SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
+             FROM ig_search \
+             WHERE value MATCH ? AND field = ? \
+             ORDER BY rank DESC \
+             ) AS ranktable USING(doc_id)\
+             ORDER BY ranktable.rank DESC", query, field];
+
+    }
     return [self resultWithResultSet:rs];
 }
 
