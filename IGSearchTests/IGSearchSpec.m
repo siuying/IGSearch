@@ -8,11 +8,19 @@
 
 #import "IGSearch.h"
 #import "Kiwi.h"
+#import "DDLog.h"
+#import "DDASLLogger.h"
+#import "DDTTYLogger.h"
 
 SPEC_BEGIN(IGSearchSpec)
 
 describe(@"IGSearch", ^{
     __block IGSearch* search;
+    
+    beforeAll(^{
+        [DDLog addLogger:[DDASLLogger sharedInstance]];
+        [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    });
     
     beforeEach(^{
        search = [[IGSearch alloc] initWithPath:@":memory:"]; 

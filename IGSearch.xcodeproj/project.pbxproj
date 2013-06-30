@@ -509,6 +509,11 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"IGSEARCH_LOG_LEVEL=LOG_LEVEL_INFO",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "IGSearch/IGSearch-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
@@ -524,6 +529,11 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"IGSEARCH_LOG_LEVEL=LOG_LEVEL_INFO",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "IGSearch/IGSearch-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
@@ -544,6 +554,11 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"IGSEARCH_LOG_LEVEL=LOG_LEVEL_VERBOSE",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "IGSearchTests/IGSearchTests-Info.plist";
 				OTHER_LDFLAGS = "$(inherited)";

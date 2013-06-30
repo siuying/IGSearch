@@ -9,6 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "FMDatabase.h"
 
+#ifndef IGSEARCH_LOG_LEVEL
+#define IGSEARCH_LOG_LEVEL LOG_LEVEL_OFF
+#endif
+
 @interface IGSearch : NSObject
 
 @property (nonatomic, strong) FMDatabase *database;

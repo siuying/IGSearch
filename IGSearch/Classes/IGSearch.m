@@ -10,6 +10,9 @@
 #import "fts3_tokenizer.h"
 #import "sqlite3.h"
 #import "rank.h"
+#import "DDLog.h"
+
+static const int ddLogLevel = IGSEARCH_LOG_LEVEL;
 
 void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 
@@ -75,6 +78,9 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 
 -(NSUInteger) count {
     FMResultSet* rs = [self.database executeQuery:@"select count(distinct doc_id) as count from ig_search"];
+    if ([self.database hadError]) {
+        DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
+    }
     if ([rs next]) {
         return [rs intForColumn:@"count"];
     } else {
@@ -117,11 +123,17 @@ FROM ig_search "];
 
     [sql appendString:@"ORDER BY rank DESC ) AS ranktable USING(doc_id) "];
     [sql appendString:@"ORDER BY ranktable.rank DESC "];
-    
+
     if (field == nil) {
+        DDLogVerbose(@"SQL = %@, query = %@", sql, query);
         rs = [self.database executeQuery:sql, query];
     } else {
+        DDLogVerbose(@"SQL = %@, field = %@, query = %@", sql, field, query);
         rs = [self.database executeQuery:sql, field, query];
+    }
+
+    if ([self.database hadError]) {
+        DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
     }
 
     if (fetchIdOnly) {
@@ -174,6 +186,7 @@ FROM ig_search "];
     while ([resultSet next]) {
         NSString* docId = [resultSet stringForColumn:@"doc_id"];
         [results addObject:docId];
+        DDLogVerbose(@" doc_id = %@", docId);
     }
     return [results allObjects];
 }
