@@ -28,6 +28,7 @@
  Index a doucment.
  @param document The document. Must be a dictionary with key and values as String.
  @param docId A string key represent the document.
+ @note The index is done asynchronously. It is safe to use indexDocument:withId: concurrently with any other methods.
  */
 -(void) indexDocument:(NSDictionary*)document withId:(NSString*)docId;
 
