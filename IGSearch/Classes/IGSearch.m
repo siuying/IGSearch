@@ -36,6 +36,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         if (![_database open]) {
             DDLogError(@"Failed open database: %@", path);
         }
+        _database.shouldCacheStatements = YES;
 
         [self setupFullTextSearch];
         [self createTableIfNeeded];
