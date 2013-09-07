@@ -18,6 +18,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 
 @interface IGSearch()
 @property (nonatomic, strong) dispatch_queue_t queue;
+@property (nonatomic, strong) FMDatabase *database;
 @end
 
 @implementation IGSearch
@@ -160,10 +161,23 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         if (fetchIdOnly) {
             result = [self documentIdsWithResultSet:rs];
         } else {
-            result = [self documentWithResultSet:rs];
+            result = [self documentsWithResultSet:rs];
         }
     });
-    return result;    
+    return result;
+}
+
+-(NSDictionary*) documentWithId:(NSString*)docId {
+    __block NSDictionary* document = nil;
+    dispatch_sync(self.queue, ^{
+        FMResultSet* rs = [self.database executeQuery:@"SELECT field, value FROM ig_search WHERE doc_id = ?", docId];
+        if ([self.database hadError]) {
+            DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
+        } else {
+            document = [self documentWithResultSet:rs];
+        }
+    });
+    return document;
 }
 
 #pragma mark - Private
@@ -191,7 +205,20 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     });
 }
 
--(NSArray*) documentWithResultSet:(FMResultSet*)resultSet {
+-(NSDictionary*) documentWithResultSet:(FMResultSet*)resultSet {
+    NSMutableDictionary* document = nil;
+    while ([resultSet next]) {
+        if (!document) {
+            document = [NSMutableDictionary dictionary];
+        }
+        NSString* field = [resultSet stringForColumn:@"field"];
+        NSString* value = [resultSet stringForColumn:@"value"];
+        [document setObject:value forKey:field];
+    }
+    return [document copy];
+}
+
+-(NSArray*) documentsWithResultSet:(FMResultSet*)resultSet {
     NSMutableDictionary* results = [NSMutableDictionary dictionary];
     while ([resultSet next]) {
         NSString* docId = [resultSet stringForColumn:@"doc_id"];

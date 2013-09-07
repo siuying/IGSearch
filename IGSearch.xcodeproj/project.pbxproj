@@ -548,10 +548,7 @@
 			baseConfigurationReference = 3AABD415521C42A6906C846B /* Pods-IGSearchTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/IGSearch.app/IGSearch";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -573,10 +570,7 @@
 			baseConfigurationReference = 3AABD415521C42A6906C846B /* Pods-IGSearchTests.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/IGSearch.app/IGSearch";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "IGSearch/IGSearch-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";
