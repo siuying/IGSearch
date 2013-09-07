@@ -95,9 +95,9 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     });
 }
 
--(NSUInteger) count {
-    __block NSUInteger count = 0;
-    dispatch_sync(self.queue, ^{
+-(void) countWithBlock:(void(^)(NSUInteger count))block {
+    dispatch_async(self.queue, ^{
+        NSUInteger count = 0;
         FMResultSet* rs = [self.database executeQuery:@"select count(distinct doc_id) as count from ig_search"];
         if ([self.database hadError]) {
             DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
@@ -107,27 +107,26 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         } else {
             count = 0;
         }
+        block(count);
     });
-    return count;    
 }
 
--(NSArray*) search:(NSString*)query {
-    return [self search:query withField:nil fetchIdOnly:NO];
+-(void) search:(NSString*)query block:(void(^)(NSArray* documents))block {
+    [self search:query withField:nil fetchIdOnly:NO block:block];
 }
 
--(NSArray*) search:(NSString*)query withField:(NSString*)field {
-    return [self search:query withField:field fetchIdOnly:NO];
+-(void) search:(NSString*)query withField:(NSString*)field block:(void(^)(NSArray* documents))block {
+    [self search:query withField:field fetchIdOnly:NO block:block];
 }
 
--(NSArray*) search:(NSString*)query withField:(NSString*)field fetchIdOnly:(BOOL)fetchIdOnly {
+-(void) search:(NSString*)query withField:(NSString*)field fetchIdOnly:(BOOL)fetchIdOnly block:(void(^)(NSArray* documents))block {
     if (!query) {
         [[NSException exceptionWithName:NSInvalidArgumentException
                                  reason:@"search query cannot be nil"
                                userInfo:nil] raise];
     }
 
-    __block NSArray* result = nil;
-    dispatch_sync(self.queue, ^{
+    dispatch_async(self.queue, ^{
         FMResultSet* rs = nil;
         NSMutableString* sql = [NSMutableString string];
         if (fetchIdOnly) {
@@ -168,40 +167,42 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         if ([self.database hadError]) {
             DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
         }
-
+        
+        NSArray* result = nil;
         if (fetchIdOnly) {
             result = [self documentIdsWithResultSet:rs];
         } else {
             result = [self documentsWithResultSet:rs];
         }
+        block(result);
     });
-    return result;
 }
 
--(NSDictionary*) documentWithId:(NSString*)docId {
-    __block NSDictionary* document = nil;
-    dispatch_sync(self.queue, ^{
+-(void) documentWithId:(NSString*)docId block:(void(^)(NSDictionary* document))block {
+    dispatch_async(self.queue, ^{
         FMResultSet* rs = [self.database executeQuery:@"SELECT field, value FROM ig_search WHERE doc_id = ?", docId];
         if ([self.database hadError]) {
             DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
+            block(nil);
+
         } else {
-            document = [self documentWithResultSet:rs];
+            NSDictionary* document = [self documentWithResultSet:rs];
+            block(document);
+
         }
     });
-    return document;
 }
 
 -(void) deleteDocumentWithId:(NSString*)docId {
-    __block BOOL updated = NO;
-    dispatch_sync(self.queue, ^{
-        updated = [self.database executeUpdate:@"DELETE FROM ig_search WHERE doc_id = ?", docId];
+    dispatch_barrier_async(self.queue, ^{
+        [self.database executeUpdate:@"DELETE FROM ig_search WHERE doc_id = ?", docId];
     });
 }
 
 #pragma mark - Private
 
 -(void) setupFullTextSearch {
-    dispatch_barrier_async(_queue, ^{
+    dispatch_barrier_sync(_queue, ^{
         const static sqlite3_tokenizer_module* module;
         sqlite3Fts3PorterTokenizerModule(&module);
         NSAssert(module, @"module cannot be nil");
@@ -215,7 +216,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(void) createTableIfNeeded {
-    dispatch_barrier_async(_queue, ^{
+    dispatch_barrier_sync(_queue, ^{
         BOOL result = [_database executeUpdate:@"CREATE VIRTUAL TABLE IF NOT EXISTS ig_search USING FTS4 (id, doc_id, field, value, tokenize=mozporter)", nil];
         if (!result) {
             DDLogError(@"failed create db: %@", [_database lastError]);
@@ -261,6 +262,61 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         DDLogVerbose(@" doc_id = %@", docId);
     }
     return [results allObjects];
+}
+
+@end
+
+@implementation IGSearch (Synchronous)
+
+-(NSUInteger) count {
+    __block NSUInteger count = 0;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    
+    [self countWithBlock:^(NSUInteger _count) {
+        count = _count;
+        dispatch_semaphore_signal(semaphore);
+    }];
+    
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    return count;
+}
+
+-(NSArray*) search:(NSString*)query {
+    return [self search:query withField:nil fetchIdOnly:NO];
+}
+
+-(NSArray*) search:(NSString*)query withField:(NSString*)field {
+    return [self search:query withField:field fetchIdOnly:NO];
+}
+
+-(NSArray*) search:(NSString*)query withField:(NSString*)field fetchIdOnly:(BOOL)fetchIdOnly {
+    if (!query) {
+        [[NSException exceptionWithName:NSInvalidArgumentException
+                                 reason:@"search query cannot be nil"
+                               userInfo:nil] raise];
+    }
+    
+    __block NSArray* result = nil;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    
+    [self search:query withField:field fetchIdOnly:fetchIdOnly block:^(NSArray *documents) {
+        result = documents;
+        dispatch_semaphore_signal(semaphore);
+    }];
+    
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    return result;
+}
+
+-(NSDictionary*) documentWithId:(NSString*)docId {
+    __block NSDictionary* document = nil;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [self documentWithId:docId block:^(NSDictionary *_document) {
+        document = _document;
+        dispatch_semaphore_signal(semaphore);
+    }];
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    return document;
 }
 
 @end

@@ -63,97 +63,83 @@ describe(@"IGSearch", ^{
         });
     });
 
-    describe(@"-search:", ^{
-        it(@"should search document", ^{
-            [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
-            [search indexDocument:@{@"title": @"Super Mario Bros", @"system": @"NES"} withId:@"2"];
-            [search indexDocument:@{@"title": @"Sonic", @"system": @"Megadrive"} withId:@"3"];
-
-            NSArray* games = [search search:@"Street"];
-            [[games shouldNot] beNil];
-            [[games should] haveCountOf:1];
-            [[games[0] should] equal:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"}];
-        });
-
-        it(@"should search CJK document", ^{
-            [search indexDocument:@{@"title": @"當然，也許一個是印度人，沒錯！"} withId:@"1"];
-            [search indexDocument:@{@"title": @"這一個月是訂出標準，對豪宅短期買賣，你口中只講冰冷的數字，在短時間內，嘉蘭部落的需求原為70戶，開放大陸觀光客來台，它在這部分是負責監理工作，哪怕是捅了馬蜂窩，主計長不是今天才做的。"} withId:@"2"];
-            [search indexDocument:@{@"title": @"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"} withId:@"3"];
-            
-            NSArray* results = [search search:@"印度人"];
-            [[results shouldNot] beNil];
-            [[results should] haveCountOf:1];
-            [[results[0][@"title"] should] equal:@"當然，也許一個是印度人，沒錯！"];
-            
-            results = [search search:@"還不賴"];
-            [[results shouldNot] beNil];
-            [[results should] haveCountOf:1];
-            [[results[0][@"title"] should] equal:@"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"];
-        });
-    });
-    
-    describe(@"-search:withField:", ^{
-        it(@"should search document", ^{
-            [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
-            [search indexDocument:@{@"title": @"Super Mario Bros", @"system": @"NES"} withId:@"2"];
-            [search indexDocument:@{@"title": @"Sonic", @"system": @"Mega Drive"} withId:@"3"];
-            [search indexDocument:@{@"title": @"Mega Man", @"system": @"NES"} withId:@"4"];
-
-            NSArray* games = [search search:@"Mega" withField:@"system"];
-            [[games shouldNot] beNil];
-            [[games should] haveCountOf:1];
-            [[games[0][@"title"] should] equal:@"Sonic"];
-            
-            games = [search search:@"Mega" withField:@"title"];
-            [[games shouldNot] beNil];
-            [[games should] haveCountOf:1];
-            [[games[0][@"title"] should] equal:@"Mega Man"];
-        });
-        
-        it(@"should search CJK document", ^{
-            [search indexDocument:@{@"title": @"當然，也許一個是印度人，沒錯！"} withId:@"1"];
-            [search indexDocument:@{@"title": @"這一個月是訂出標準，對豪宅短期買賣，你口中只講冰冷的數字，在短時間內，嘉蘭部落的需求原為70戶，開放大陸觀光客來台，它在這部分是負責監理工作，哪怕是捅了馬蜂窩，主計長不是今天才做的。"} withId:@"2"];
-            [search indexDocument:@{@"title": @"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"} withId:@"3"];
-            
-            NSArray* results = [search search:@"印度人" withField:@"title"];
-            [[results shouldNot] beNil];
-            [[results should] haveCountOf:1];
-            [[results[0][@"title"] should] equal:@"當然，也許一個是印度人，沒錯！"];
-            
-            results = [search search:@"還不賴" withField:@"title"];
-            [[results shouldNot] beNil];
-            [[results should] haveCountOf:1];
-            [[results[0][@"title"] should] equal:@"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"];
-        });
-    });
-    
-    describe(@"-search:withField:fetchIdOnly:", ^{
-        it(@"should return only ID if the fetchIdOnly is YES", ^{
+    describe(@"-search:withField:fetchIdOnly: families", ^{
+        beforeEach(^{
             [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
             [search indexDocument:@{@"title": @"Mega Man", @"system": @"Mega Drive"} withId:@"2"];
 
-            NSArray* results = [search search:@"Street" withField:@"title" fetchIdOnly:YES];
-            [[results should] haveCountOf:1];
-            [[results[0] should] beKindOfClass:[NSString class]];
-            [[results[0] should] equal:@"1"];
-            
-            results = [search search:@"Mega" withField:nil fetchIdOnly:YES];
-            [[results should] haveCountOf:1];
-            [[results[0] should] beKindOfClass:[NSString class]];
-            [[results[0] should] equal:@"2"];
+            [search indexDocument:@{@"title": @"當然，也許一個是印度人，沒錯！"} withId:@"3"];
+            [search indexDocument:@{@"title": @"這一個月是訂出標準，對豪宅短期買賣，你口中只講冰冷的數字，在短時間內，嘉蘭部落的需求原為70戶，開放大陸觀光客來台，它在這部分是負責監理工作，哪怕是捅了馬蜂窩，主計長不是今天才做的。"} withId:@"4"];
+            [search indexDocument:@{@"title": @"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"} withId:@"5"];
         });
 
-        it(@"should return a dictionary if the fetchIdOnly is NO", ^{
-            [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
+        describe(@"-search:withField:fetchIdOnly:", ^{
+            it(@"should return only ID if the fetchIdOnly is YES", ^{
+                NSArray* results = [search search:@"Street" withField:@"title" fetchIdOnly:YES];
+                [[results should] haveCountOf:1];
+                [[results[0] should] beKindOfClass:[NSString class]];
+                [[results[0] should] equal:@"1"];
+            });
             
-            NSArray* results = [search search:@"Street" withField:@"title" fetchIdOnly:NO];
-            [[results should] haveCountOf:1];
-            [[results[0] should] beKindOfClass:[NSDictionary class]];
-            [[results[0][@"system"] should] equal:@"Xbox 360"];
+            it(@"should return a dictionary if the fetchIdOnly is NO", ^{
+                NSArray* results = [search search:@"Street" withField:@"title" fetchIdOnly:NO];
+                [[results should] haveCountOf:1];
+                [[results[0] should] beKindOfClass:[NSDictionary class]];
+                [[results[0][@"system"] should] equal:@"Xbox 360"];
+            });
+
+            it(@"should search CJK document", ^{
+                NSArray* results = [search search:@"印度人" withField:@"title" fetchIdOnly:NO];
+                [[results shouldNot] beNil];
+                [[results should] haveCountOf:1];
+                [[results[0][@"title"] should] equal:@"當然，也許一個是印度人，沒錯！"];
+                
+                results = [search search:@"還不賴" withField:@"title" fetchIdOnly:NO];
+                [[results shouldNot] beNil];
+                [[results should] haveCountOf:1];
+                [[results[0][@"title"] should] equal:@"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"];
+            });
+        });
+
+        describe(@"-search:withField:fetchIdOnly:block:", ^{
+            it(@"should return only ID if the fetchIdOnly is YES", ^{
+                __block NSArray* results = nil;
+                [search search:@"Street" withField:@"title" fetchIdOnly:YES block:^(NSArray *documents) {
+                    results = documents;
+                }];
+                [[expectFutureValue(results) shouldEventually] haveCountOf:1];
+                [[results[0] should] beKindOfClass:[NSString class]];
+                [[results[0] should] equal:@"1"];
+            });
+            
+            it(@"should return a dictionary if the fetchIdOnly is NO", ^{
+                __block NSArray* results = nil;
+                [search search:@"Street" withField:@"title" fetchIdOnly:NO block:^(NSArray *documents) {
+                    results = documents;
+                }];
+                [[expectFutureValue(results) shouldEventually] haveCountOf:1];
+                [[results[0] should] beKindOfClass:[NSDictionary class]];
+                [[results[0][@"system"] should] equal:@"Xbox 360"];
+            });
+            
+            it(@"should search CJK document", ^{
+                __block NSArray* results = nil;
+                [search search:@"印度人" withField:@"title" fetchIdOnly:NO block:^(NSArray* documents){
+                    results = documents;
+                }];
+                [[expectFutureValue(results) shouldEventually] haveCountOf:1];
+                [[results[0][@"title"] should] equal:@"當然，也許一個是印度人，沒錯！"];
+
+                [search search:@"還不賴" withField:@"title" fetchIdOnly:NO block:^(NSArray* documents){
+                    results = documents;
+                }];
+                [[expectFutureValue(results) shouldEventually] haveCountOf:1];
+                [[results[0][@"title"] should] equal:@"還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴，還不賴！"];
+            });
         });
     });
     
-    describe(@"-documentWithId:", ^{
+    describe(@"-documentWithId: families", ^{
         __block NSDictionary* document1;
         __block NSDictionary* document2;
         
@@ -165,14 +151,34 @@ describe(@"IGSearch", ^{
             [search indexDocument:document2 withId:@"2"];
         });
         
-        it(@"should return the document with specified ID", ^{
-            NSDictionary* document = [search documentWithId:@"1"];
-            [[document should] equal:document1];
+        describe(@"-documentWithId:", ^{
+            it(@"should return the document with specified ID", ^{
+                NSDictionary* document = [search documentWithId:@"1"];
+                [[document should] equal:document1];
+            });
+            
+            it(@"should return nil if document not found", ^{
+                NSDictionary* document = [search documentWithId:@"3"];
+                [[document should] beNil];
+            });
         });
         
-        it(@"should return nil if document not found", ^{
-            NSDictionary* document = [search documentWithId:@"3"];
-            [[document should] beNil];
+        describe(@"-documentWithId:block:", ^{
+            it(@"should return the document with specified ID", ^{
+                __block NSDictionary* document = nil;
+                [search documentWithId:@"1" block:^(NSDictionary *d) {
+                    document = d;
+                }];
+                [[expectFutureValue(document) shouldEventually] equal:document1];
+            });
+            
+            it(@"should return nil if document not found", ^{
+                __block NSDictionary* document = @{};
+                [search documentWithId:@"3" block:^(NSDictionary *d) {
+                    document = d;
+                }];
+                [[expectFutureValue(document) shouldEventually] beNil];
+            });
         });
     });
     
@@ -193,13 +199,34 @@ describe(@"IGSearch", ^{
             [[document shouldNot] beNil];
 
             [search deleteDocumentWithId:@"1"];
-            
+
             document = [search documentWithId:@"1"];
             [[document should] beNil];
         });
     });
     
-    
+    describe(@"-count families", ^{
+        beforeEach(^{
+            [search indexDocument:@{@"title": @"Street Fighter 4", @"system": @"Xbox 360"} withId:@"1"];
+            [search indexDocument:@{@"title": @"Mega Man", @"system": @"Mega Drive"} withId:@"2"];
+        });
+        
+        describe(@"-count", ^{
+            it(@"should count documents", ^{
+                [[theValue([search count]) should] equal:theValue(2)];
+            });
+        });
+
+        describe(@"-countWithBlock:", ^{
+            it(@"should count documents", ^{
+                __block NSUInteger count = 0;
+                [search countWithBlock:^(NSUInteger _count) {
+                    count = _count;
+                }];
+                [[expectFutureValue(theValue(count)) shouldEventually] equal:theValue(2)];
+            });
+        });
+    });
 });
 
 SPEC_END

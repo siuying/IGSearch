@@ -29,7 +29,8 @@
 -(BOOL) close;
 
 /**
- Index a doucment.
+ Index a doucment asynchronously.
+
  @param document The document. Must be a dictionary with key and values as String.
  @param docId A string key represent the document.
  @note The index is done asynchronously. It is safe to use indexDocument:withId: concurrently with any other methods.
@@ -37,19 +38,65 @@
 -(void) indexDocument:(NSDictionary*)document withId:(NSString*)docId;
 
 /**
- Count number of document was indexed.
+ Count number of document asynchronously.
 */
+-(void) countWithBlock:(void(^)(NSUInteger count))block;
+
+/**
+ Search the database asynchronously, with string on any fields sorted by match rank.
+ @param query the search query
+ @param block when the search result is available, documents is invoked.
+ */
+-(void) search:(NSString*)query block:(void(^)(NSArray* documents))block;
+
+/**
+ Search the database asynchronously, with string on any fields sorted by match rank.
+ @param query The search query.
+ @param field The field to search. if nil, search all fields, otherwise only search on specific field.
+ @param block when the search result is available, documents is invoked.
+ */
+-(void) search:(NSString*)query withField:(NSString*)field block:(void(^)(NSArray* documents))block;
+
+/**
+ Search the database asynchronously, with string on any fields sorted by match rank.
+ @param query The search query.
+ @param field The field to search. if nil, search all fields, otherwise only search on specific field.
+ @param fetchIdOnly Only return the doc id of result. If YES, only fetch the ID. otherwise, return whole document.
+ @param block when the search result is available, documents is invoked.
+ */
+-(void) search:(NSString*)query withField:(NSString*)field fetchIdOnly:(BOOL)fetchIdOnly block:(void(^)(NSArray* documents))block;
+
+/**
+ Find document with specific ID asynchronously.
+ 
+ @param docId the ID of the document to find
+ */
+-(void) documentWithId:(NSString*)docId block:(void(^)(NSDictionary* document))block;
+
+/**
+ Delete document with specified docId asynchronously.
+
+ @param docId the ID of the document to be deleted
+ */
+-(void) deleteDocumentWithId:(NSString*)docId;
+
+@end
+
+@interface IGSearch (Synchronous)
+/**
+ Synchronously Count number of document.
+ */
 -(NSUInteger) count;
 
 /**
- Search the database with string on any fields sorted by match rank.
+ Synchronously search the database with string on any fields sorted by match rank.
  @param query the search query
  @return NSArray* array of document indexed, having fields contain the string, sorted by rank.
  */
 -(NSArray*) search:(NSString*)query;
 
 /**
- Search the database with string on specific field sorted by match rank.
+ Synchronously search the database with string on specific field sorted by match rank.
  @param query The search query.
  @param field The field to search. if nil, search all fields, otherwise only search on specific field.
  @return NSArray* array of document indexed, having fields contain the string, sorted by rank.
@@ -57,7 +104,8 @@
 -(NSArray*) search:(NSString*)query withField:(NSString*)field;
 
 /**
- Search the database with string on specific field sorted by match rank, optionally only return the doc ID.
+ Synchronously search the database with string on specific field sorted by match rank, optionally only return the doc ID.
+
  @param query The search query.
  @param field The field to search. if nil, search all fields, otherwise only search on specific field.
  @param fetchIdOnly Only return the doc id of result. If YES, only fetch the ID. otherwise, return whole document.
@@ -72,12 +120,5 @@
  @return the document, or nil if such document cannot be found
  */
 -(NSDictionary*) documentWithId:(NSString*)docId;
-
-/**
- Delete document with specified docId
-
- @param docId the ID of the document to be deleted
- */
--(void) deleteDocumentWithId:(NSString*)docId;
 
 @end
