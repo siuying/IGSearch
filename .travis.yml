@@ -5,4 +5,4 @@
     - pod install
     - brew update
     - brew unlink xctool && brew install xctool --HEAD
-  script: "xctool -workspace IGSearch.xcworkspace -scheme IGSearch -sdk iphonesimulator -configuration Release test -test-sdk iphonesimulator test"
+  script: "rake test"
