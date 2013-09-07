@@ -1,3 +1,8 @@
 ---
   language: objective-c
-  script: "xctool -workspace IGSearch.xcworkspace -scheme IGSearch test"
+  before_install:
+    - gem install cocoapods -v 0.24.0
+    - pod install
+    - brew update
+    - brew unlink xctool && brew install xctool --HEAD
+  script: "xctool -workspace IGSearch.xcworkspace -scheme IGSearch -sdk iphonesimulator -configuration Release test -test-sdk iphonesimulator test"
