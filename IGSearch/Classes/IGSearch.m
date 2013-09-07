@@ -75,12 +75,22 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     }];
 
     dispatch_barrier_async(self.queue, ^{
+        __block BOOL succeed = NO;
         [self.database beginTransaction];
+
         [self.database executeUpdate:@"delete from ig_search where doc_id = ?", documentId];
         [document enumerateKeysAndObjectsUsingBlock:^(NSString* field, NSString* value, BOOL *stop) {
-            [self.database executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value];
+            succeed = [self.database executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value];
+            if (!succeed) {
+                *stop = YES;
+            }
         }];
-        [self.database commit];
+
+        if (succeed) {
+            [self.database commit];
+        } else {
+            [self.database rollback];
+        }
     });
 }
 
