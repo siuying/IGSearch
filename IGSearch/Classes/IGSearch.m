@@ -180,6 +180,13 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
     return document;
 }
 
+-(void) deleteDocumentWithId:(NSString*)docId {
+    __block BOOL updated = NO;
+    dispatch_sync(self.queue, ^{
+        updated = [self.database executeUpdate:@"DELETE FROM ig_search WHERE doc_id = ?", docId];
+    });
+}
+
 #pragma mark - Private
 
 -(void) setupFullTextSearch {

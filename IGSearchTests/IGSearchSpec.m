@@ -153,28 +153,53 @@ describe(@"IGSearch", ^{
         });
     });
     
-    describe(@"-getWithId:", ^{
+    describe(@"-documentWithId:", ^{
         __block NSDictionary* document1;
         __block NSDictionary* document2;
-
+        
         beforeEach(^{
             document1 = @{@"title": @"Street Fighter 4", @"system": @"Xbox 360"};
             document2 = @{@"title": @"Mega Man", @"system": @"Mega Drive"};
-
+            
             [search indexDocument:document1 withId:@"1"];
             [search indexDocument:document2 withId:@"2"];
         });
-
+        
         it(@"should return the document with specified ID", ^{
             NSDictionary* document = [search documentWithId:@"1"];
             [[document should] equal:document1];
         });
-
+        
         it(@"should return nil if document not found", ^{
             NSDictionary* document = [search documentWithId:@"3"];
             [[document should] beNil];
         });
     });
+    
+    describe(@"-deleteDocumentWithId:", ^{
+        __block NSDictionary* document1;
+        __block NSDictionary* document2;
+        
+        beforeEach(^{
+            document1 = @{@"title": @"Street Fighter 4", @"system": @"Xbox 360"};
+            document2 = @{@"title": @"Mega Man", @"system": @"Mega Drive"};
+            
+            [search indexDocument:document1 withId:@"1"];
+            [search indexDocument:document2 withId:@"2"];
+        });
+
+        it(@"should delete the document with specified ID", ^{
+            NSDictionary* document = [search documentWithId:@"1"];
+            [[document shouldNot] beNil];
+
+            [search deleteDocumentWithId:@"1"];
+            
+            document = [search documentWithId:@"1"];
+            [[document should] beNil];
+        });
+    });
+    
+    
 });
 
 SPEC_END

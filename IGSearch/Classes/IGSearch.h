@@ -73,4 +73,11 @@
  */
 -(NSDictionary*) documentWithId:(NSString*)docId;
 
+/**
+ Delete document with specified docId
+
+ @param docId the ID of the document to be deleted
+ */
+-(void) deleteDocumentWithId:(NSString*)docId;
+
 @end
