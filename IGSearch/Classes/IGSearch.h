@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "FMDatabaseQueue.h"
 #import "FMDatabase.h"
 
 #ifndef IGSEARCH_LOG_LEVEL
@@ -15,7 +16,7 @@
 
 @interface IGSearch : NSObject
 
-@property (nonatomic, strong, readonly) FMDatabase *database;
+@property (nonatomic, strong, readonly) FMDatabaseQueue *database;
 
 /**
  Create a search engine by supply a path to the database.
