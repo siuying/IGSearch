@@ -17,8 +17,7 @@ static const int ddLogLevel = IGSEARCH_LOG_LEVEL;
 void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 
 @interface IGSearch()
-@property (nonatomic, strong) dispatch_queue_t queue;
-@property (nonatomic, strong) FMDatabase *database;
+@property (nonatomic, strong) FMDatabaseQueue *database;
 @end
 
 @implementation IGSearch
@@ -31,12 +30,13 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 -(id) initWithPath:(NSString*) path {
     self = [super init];
     if (self) {
-        _queue = dispatch_queue_create("hk.ignition.search", DISPATCH_QUEUE_CONCURRENT);
-        _database = [FMDatabase databaseWithPath:path];
-        if (![_database open]) {
-            DDLogError(@"Failed open database: %@", path);
-        }
-        _database.shouldCacheStatements = YES;
+        _database = [FMDatabaseQueue databaseQueueWithPath:path];
+        [self.database inDatabase:^(FMDatabase *db) {
+            if (![db open]) {
+                DDLogError(@"Failed open database: %@", path);
+            }
+            db.shouldCacheStatements = YES;
+        }];
 
         [self setupFullTextSearch];
         [self createTableIfNeeded];
@@ -45,11 +45,11 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 }
 
 -(BOOL) close {
-    return [self.database close];
+    return YES;
 }
 
 -(void) dealloc {
-    self.queue = nil;
+
 }
 
 -(void) indexDocument:(NSDictionary*)document withId:(NSString*)documentId {
@@ -75,32 +75,27 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
         }
     }];
 
-    dispatch_barrier_async(self.queue, ^{
+    [self.database inTransaction:^(FMDatabase *db, BOOL *rollback) {
         __block BOOL succeed = NO;
-        [self.database beginTransaction];
-
-        [self.database executeUpdate:@"delete from ig_search where doc_id = ?", documentId];
+        [db executeUpdate:@"delete from ig_search where doc_id = ?", documentId];
         [document enumerateKeysAndObjectsUsingBlock:^(NSString* field, NSString* value, BOOL *stop) {
-            succeed = [self.database executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value];
+            succeed = [db executeUpdate:@"insert into ig_search (doc_id, field, value) values (?, ?, ?)", documentId, field, value];
             if (!succeed) {
                 *stop = YES;
             }
         }];
-
-        if (succeed) {
-            [self.database commit];
-        } else {
-            [self.database rollback];
+        if (!succeed) {
+            *rollback = YES;
         }
-    });
+    }];
 }
 
 -(void) countWithBlock:(void(^)(NSUInteger count))block {
-    dispatch_async(self.queue, ^{
-        NSUInteger count = 0;
-        FMResultSet* rs = [self.database executeQuery:@"select count(distinct doc_id) as count from ig_search"];
-        if ([self.database hadError]) {
-            DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
+    [self.database inDatabase:^(FMDatabase *db) {
+        NSUInteger count;
+        FMResultSet* rs = [db executeQuery:@"select count(distinct doc_id) as count from ig_search"];
+        if ([db hadError]) {
+            DDLogError(@"sqlite error: %@", [db lastErrorMessage]);
         }
         if ([rs next]) {
             count = [rs intForColumn:@"count"];
@@ -108,7 +103,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
             count = 0;
         }
         block(count);
-    });
+    }];
 }
 
 -(void) search:(NSString*)query block:(void(^)(NSArray* documents))block {
@@ -126,48 +121,47 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
                                userInfo:nil] raise];
     }
 
-    dispatch_async(self.queue, ^{
-        FMResultSet* rs = nil;
-        NSMutableString* sql = [NSMutableString string];
-        if (fetchIdOnly) {
-            [sql appendString:@"SELECT doc_id FROM ig_search "];
-        } else {
-            [sql appendString:@"SELECT doc_id, field, value FROM ig_search "];
-        }
+    NSMutableString* sql = [NSMutableString string];
+    if (fetchIdOnly) {
+        [sql appendString:@"SELECT doc_id FROM ig_search "];
+    } else {
+        [sql appendString:@"SELECT doc_id, field, value FROM ig_search "];
+    }
+    
+    if (fetchIdOnly) {
+        [sql appendString:@"JOIN (\
+         SELECT distinct doc_id, rank(matchinfo(ig_search), 1) AS rank \
+         FROM ig_search "];
         
-        if (fetchIdOnly) {
-            [sql appendString:@"JOIN (\
-             SELECT distinct doc_id, rank(matchinfo(ig_search), 1) AS rank \
-             FROM ig_search "];
-            
-        } else {
-            [sql appendString:@"JOIN (\
-             SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
-             FROM ig_search "];
-            
-        }
+    } else {
+        [sql appendString:@"JOIN (\
+         SELECT doc_id, rank(matchinfo(ig_search), 1) AS rank \
+         FROM ig_search "];
+        
+    }
 
-        if (field == nil) {
-            [sql appendString:@"WHERE value MATCH ? "];
-        } else {
-            [sql appendString:@"WHERE field = ? AND value MATCH ? "];
-        }
+    if (field == nil) {
+        [sql appendString:@"WHERE value MATCH ? "];
+    } else {
+        [sql appendString:@"WHERE field = ? AND value MATCH ? "];
+    }
 
-        [sql appendString:@"ORDER BY rank DESC ) AS ranktable USING(doc_id) "];
-        [sql appendString:@"ORDER BY ranktable.rank DESC "];
+    [sql appendString:@"ORDER BY rank DESC ) AS ranktable USING(doc_id) "];
+    [sql appendString:@"ORDER BY ranktable.rank DESC "];
 
+    [self.database inDatabase:^(FMDatabase *db) {
+        FMResultSet* rs = nil;
         if (field == nil) {
             DDLogVerbose(@"SQL = %@, query = %@", sql, query);
-            rs = [self.database executeQuery:sql, query];
+            rs = [db executeQuery:sql, query];
         } else {
             DDLogVerbose(@"SQL = %@, field = %@, query = %@", sql, field, query);
-            rs = [self.database executeQuery:sql, field, query];
-        }
-
-        if ([self.database hadError]) {
-            DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
+            rs = [db executeQuery:sql, field, query];
         }
         
+        if ([db hadError]) {
+            DDLogError(@"sqlite error: %@", [db lastErrorMessage]);
+        }
         NSArray* result = nil;
         if (fetchIdOnly) {
             result = [self documentIdsWithResultSet:rs];
@@ -175,53 +169,52 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
             result = [self documentsWithResultSet:rs];
         }
         block(result);
-    });
+    }];
 }
 
 -(void) documentWithId:(NSString*)docId block:(void(^)(NSDictionary* document))block {
-    dispatch_async(self.queue, ^{
-        FMResultSet* rs = [self.database executeQuery:@"SELECT field, value FROM ig_search WHERE doc_id = ?", docId];
-        if ([self.database hadError]) {
-            DDLogError(@"sqlite error: %@", [self.database lastErrorMessage]);
+    [self.database inDatabase:^(FMDatabase *db) {
+        FMResultSet* rs = [db executeQuery:@"SELECT field, value FROM ig_search WHERE doc_id = ?", docId];
+        if ([db hadError]) {
+            DDLogError(@"sqlite error: %@", [db lastErrorMessage]);
             block(nil);
-
+            
         } else {
             NSDictionary* document = [self documentWithResultSet:rs];
             block(document);
-
         }
-    });
+    }];
 }
 
 -(void) deleteDocumentWithId:(NSString*)docId {
-    dispatch_barrier_async(self.queue, ^{
-        [self.database executeUpdate:@"DELETE FROM ig_search WHERE doc_id = ?", docId];
-    });
+    [self.database inDatabase:^(FMDatabase *db) {
+        [db executeUpdate:@"DELETE FROM ig_search WHERE doc_id = ?", docId];
+    }];
 }
 
 #pragma mark - Private
 
 -(void) setupFullTextSearch {
-    dispatch_barrier_sync(_queue, ^{
+    [self.database inDatabase:^(FMDatabase *db) {
         const static sqlite3_tokenizer_module* module;
         sqlite3Fts3PorterTokenizerModule(&module);
         NSAssert(module, @"module cannot be nil");
         
         NSData *moduleData = [NSData dataWithBytes:&module length:sizeof(module)];
-        FMResultSet* rs = [_database executeQuery:@"SELECT fts3_tokenizer(\"mozporter\", ?)", moduleData];
+        FMResultSet* rs = [db executeQuery:@"SELECT fts3_tokenizer(\"mozporter\", ?)", moduleData];
         while([rs next]) {
             DDLogVerbose(@"module data = %@", [rs resultDictionary]);
-        }        
-    });
+        }
+    }];
 }
 
 -(void) createTableIfNeeded {
-    dispatch_barrier_sync(_queue, ^{
-        BOOL result = [_database executeUpdate:@"CREATE VIRTUAL TABLE IF NOT EXISTS ig_search USING FTS4 (id, doc_id, field, value, tokenize=mozporter)", nil];
+    [self.database inDatabase:^(FMDatabase *db) {
+        BOOL result = [db executeUpdate:@"CREATE VIRTUAL TABLE IF NOT EXISTS ig_search USING FTS4 (id, doc_id, field, value, tokenize=mozporter)", nil];
         if (!result) {
-            DDLogError(@"failed create db: %@", [_database lastError]);
+            DDLogError(@"failed create db: %@", [db lastError]);
         }
-    });
+    }];
 }
 
 -(NSDictionary*) documentWithResultSet:(FMResultSet*)resultSet {
@@ -271,7 +264,7 @@ void sqlite3Fts3PorterTokenizerModule(sqlite3_tokenizer_module const**ppModule);
 -(NSUInteger) count {
     __block NSUInteger count = 0;
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
+
     [self countWithBlock:^(NSUInteger _count) {
         count = _count;
         dispatch_semaphore_signal(semaphore);
