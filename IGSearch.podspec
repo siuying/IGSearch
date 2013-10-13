@@ -13,4 +13,5 @@ Pod::Spec.new do |s|
 
   s.dependency 'FMDB/standalone'
   s.dependency 'sqlite3'
+  s.dependency 'CocoaLumberjack'
 end
