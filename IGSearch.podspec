@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "IGSearch"
-  s.version = "0.3.1"
+  s.version = "0.3.2"
   s.summary = "A simple Objective-C full text search engine with CJK support."
   s.homepage = "https://github.com/siuying/IGSearch"
   s.author = { "Francis Chong" => "francis@ignition.hk", "Steven Gravell" => "steve@mokele.co.uk"}
