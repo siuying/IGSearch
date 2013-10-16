@@ -6,7 +6,8 @@ Pod::Spec.new do |s|
   s.author = { "Francis Chong" => "francis@ignition.hk", "Steven Gravell" => "steve@mokele.co.uk"}
 
   s.source = { :git => "https://github.com/siuying/IGSearch.git", :tag => s.version.to_s }
-  s.platform = :ios, '5.1'
+  s.ios.deployment_target = '5.1'
+  s.osx.deployment_target = '10.8'
   s.source_files = 'IGSearch/Classes/*.{h,m}', 'vendor/sqlite3-fts-cjk/fts3/*.{h,m,c}'
   s.requires_arc = true
   s.license = {:type => 'MIT', :file => 'LICENSE.md' }
