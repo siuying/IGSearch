@@ -1,26 +1,26 @@
 PODS:
   - CocoaLumberjack (1.6.2)
-  - FMDB/common (2.1)
-  - FMDB/standalone (2.1):
+  - FMDB/common (2.3)
+  - FMDB/standalone (2.3):
     - FMDB/common
     - sqlite3/fts
-  - Kiwi (2.2)
-  - sqlite3 (3.8.0.2):
+  - Kiwi (2.3.0)
+  - sqlite3 (3.8.6):
     - sqlite3/common
-  - sqlite3/common (3.8.0.2)
-  - sqlite3/fts (3.8.0.2):
+  - sqlite3/common (3.8.6)
+  - sqlite3/fts (3.8.6):
     - sqlite3/common
 
 DEPENDENCIES:
   - CocoaLumberjack
   - FMDB/standalone
-  - Kiwi (= 2.2)
+  - Kiwi (= 2.3.0)
   - sqlite3
 
 SPEC CHECKSUMS:
-  CocoaLumberjack: d73e1e317ced14ab930797dda6c17156ff17aaa1
-  FMDB: 8e5b7e0c644a13a70be0ec5dbffc6b30e524ab5d
-  Kiwi: db174bba4ee8068b15d7122f1b22fb64b7c1d378
-  sqlite3: da2547a00213287224486db2893bb9c181c6f8d2
+  CocoaLumberjack: 0a08f3092acaab5f92c139e1186aa255a1e39446
+  FMDB: 31ec26773c7f7b7890a6038235a1f2bbd933a7cb
+  Kiwi: 54bece5b35564d9b8e03c608d926f1a22fcfc589
+  sqlite3: 170bf094e597765aaa5d3d312a7b222a6f8ab6f0
 
-COCOAPODS: 0.26.2
+COCOAPODS: 0.33.1

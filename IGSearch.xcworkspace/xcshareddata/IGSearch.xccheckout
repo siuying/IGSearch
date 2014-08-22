@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>DBC8E52E-1B81-4FB6-B46D-0B97EFCA9DC1</string>
+	<string>D678A933-63F7-41CC-8A42-DC8A80EE00AA</string>
 	<key>IDESourceControlProjectName</key>
 	<string>IGSearch</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>05BDBF1E-25E0-452F-B153-5F9BFA06FB1D</key>
-		<string>ssh://github.com/siuying/IGSearch.git</string>
+		<key>D60DFFD515B34DA888B8BA94D177195A6E4A372A</key>
+		<string>github.com:siuying/IGSearch.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>IGSearch.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>05BDBF1E-25E0-452F-B153-5F9BFA06FB1D</key>
+		<key>D60DFFD515B34DA888B8BA94D177195A6E4A372A</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/siuying/IGSearch.git</string>
+	<string>github.com:siuying/IGSearch.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>05BDBF1E-25E0-452F-B153-5F9BFA06FB1D</string>
+	<string>D60DFFD515B34DA888B8BA94D177195A6E4A372A</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>05BDBF1E-25E0-452F-B153-5F9BFA06FB1D</string>
+			<string>D60DFFD515B34DA888B8BA94D177195A6E4A372A</string>
 			<key>IDESourceControlWCCName</key>
 			<string>IGSearch</string>
 		</dict>

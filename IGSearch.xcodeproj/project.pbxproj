@@ -63,7 +63,7 @@
 		54DD6671177F480E00A01F98 /* IGViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IGViewController.h; sourceTree = "<group>"; };
 		54DD6672177F480E00A01F98 /* IGViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IGViewController.m; sourceTree = "<group>"; };
 		54DD6675177F480E00A01F98 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/IGViewController.xib; sourceTree = "<group>"; };
-		54DD667C177F480E00A01F98 /* IGSearchTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IGSearchTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		54DD667C177F480E00A01F98 /* IGSearchTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IGSearchTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		54DD667D177F480E00A01F98 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		54DD6685177F480E00A01F98 /* IGSearchTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "IGSearchTests-Info.plist"; sourceTree = "<group>"; };
 		54DD6687177F480E00A01F98 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -122,7 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				54DD6656177F480E00A01F98 /* IGSearch.app */,
-				54DD667C177F480E00A01F98 /* IGSearchTests.octest */,
+				54DD667C177F480E00A01F98 /* IGSearchTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -256,8 +256,8 @@
 			);
 			name = IGSearchTests;
 			productName = IGSearchTests;
-			productReference = 54DD667C177F480E00A01F98 /* IGSearchTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 54DD667C177F480E00A01F98 /* IGSearchTests.xctest */;
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -561,7 +561,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
 		};
@@ -578,7 +578,7 @@
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};
